@@ -12,6 +12,9 @@ return function (App $app) {
     // // Films
     // $app->get('/film', \App\Action\Film\FilmViewAction::class);
 
+    // Ajouter un fakemon.
+    $app->post('/fakemon', \App\Action\Fakemon\AjoutFakemonAction::class);
+
     // Donne la liste des fakemons
     $app->get('/fakemon', \App\Action\Fakemon\FakemonAction::class);
 

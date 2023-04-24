@@ -72,6 +72,7 @@ paths:
                 example:
                   api_key: "Compte invalide"
 
+
   /fakemon:
     get:
       tags:
@@ -145,6 +146,52 @@ paths:
                     type: array
                 example:
                     data : []
+    post:
+      tags: 
+        - Fakemon
+      summary: Ajouter un fakemon.
+      description: Il y a besoin d'une clé api dans le header pour pouvoir ajouter un fakemon.
+      security:
+      - ApiKeyAuth: [] 
+      requestBody:
+        description: Les informations du fakemon qui a été ajouté.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              example:
+                username : 'usager'
+                password : '1234'
+                
+      responses:
+        '200': 
+          description: Lorsque les informationes sont valides 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  api_key:
+                    type: string
+                example:
+                  api_key: "e65d7004-a893-41ad-9436-4ecadf9ddc7e"
+        '403': 
+          description: Lorsque les informations sont invalides
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  api_key:
+                    type: string
+                example:
+                  api_key: "Compte invalide"                
   /type:
     get:
       tags:
