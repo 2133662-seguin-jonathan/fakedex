@@ -20,7 +20,7 @@ final class HomeAction
     ): ResponseInterface {
         
         $result = json_encode([
-            'message' => 'Services Web H2023 - Exercice 04'
+            'message' => 'Générateur de fakemon'
         ]);
         
         $response->getBody()->write($result);

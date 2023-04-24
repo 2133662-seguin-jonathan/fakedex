@@ -1,0 +1,207 @@
+openapi: 3.0.0
+info:
+  version: 1.3.0
+  title: Fakedex
+  description: Le fakedex de fakemon céer pour un projet de rpg style pokemon.
+  
+servers: 
+  - url: http://fakedex.loc
+paths:
+  /:
+    get:
+      tags:
+        - Général
+      summary: Message de bienvenue
+      description: ''
+      responses:
+        '200': 
+          description: ''
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                example:
+                    message : 'Générateur de fakemon'
+  
+  /apikey:
+    post:
+      tags: 
+        - ApiKey
+      summary: Recherche d'une clé api.
+      description: La clé d'api fourni est un UUID en string pour s'assurer que chacun est unique.
+      requestBody:
+        description: Les informations de l'usager existant.
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                username:
+                  type: string
+                password:
+                  type: string
+              example:
+                username : 'usager'
+                password : '1234'
+                
+      responses:
+        '200': 
+          description: Lorsque les informationes sont valides 
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  api_key:
+                    type: string
+                example:
+                  api_key: "e65d7004-a893-41ad-9436-4ecadf9ddc7e"
+        '403': 
+          description: Lorsque les informations sont invalides
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  api_key:
+                    type: string
+                example:
+                  api_key: "Compte invalide"
+
+  /fakemon:
+    get:
+      tags:
+        - Fakemon
+      summary: Récuppérer la liste des fakemon qui ont été générer.
+      description: Il y a besoin d'une clé api dans le header pour pouvoir avoir accès à la liste.
+      security:
+      - ApiKeyAuth: [] 
+      responses:
+        '200': 
+          description: Renvoi la liste des fakemons.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        nom:
+                          type: string
+                        id_type1:
+                          type: integer
+                        id_type2:
+                          type: integer
+                        hp:
+                          type: integer
+                        atk:
+                          type: integer
+                        def:
+                          type: integer
+                        sp_atk:
+                          type: integer
+                        sp_def:
+                          type: integer
+                        speed: 
+                          type: integer
+                        description:
+                          type: string
+                example:
+                    data : [
+                      {
+                        id: 1,
+                        nom: "Léviathan",
+                        id_type1: 4,
+                        id_type2: 17,
+                        hp: 500,
+                        atk: 240,
+                        def: 150,
+                        sp_atk: 100,
+                        sp_def: 100,
+                        speed: 25,
+                        description: "Monstre mythologique des océans qui a détruit l'Atlantide selon la légende."
+                      },
+                      {
+                        ...
+                      }
+                    ]
+        '403': 
+          description: Indique que la clé d'api est invalide.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                example:
+                    data : []
+  /type:
+    get:
+      tags:
+        - Fakemon
+      summary: Récuppérer la liste des types accessibles.
+      description: Il y a besoin d'une clé api dans le header pour pouvoir avoir accès à la liste.
+      security:
+      - ApiKeyAuth: [] 
+      responses:
+        '200': 
+          description: Renvoi la liste des types
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        id:
+                          type: integer
+                        nom:
+                          type: string
+                example:
+                    data : [
+                      {
+                        id: 1,
+                        nom: "Ancun"
+                      },
+                      {
+                        id: 2,
+                        .nom: "Normal"
+                      },
+                      {
+                        ...
+                      }
+                    ]
+        '403': 
+          description: Indique que la clé d'api est invalide.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  data:
+                    type: array
+                example:
+                    data : []
+   
+
+components:
+  securitySchemes:
+    ApiKeyAuth:        # arbitrary name for the security scheme
+      type: apiKey
+      in: header      # can be "header", "query" or "cookie"
+      name: Authorization # name of the header, query parameter or cookie
+      description: La clé d'api à mettre.
+      

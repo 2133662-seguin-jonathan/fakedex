@@ -9,8 +9,14 @@ return function (App $app) {
     // Documentation de l'api
     $app->get('/docs', \App\Action\Docs\SwaggerUiAction::class);
 
-    // Films
-    $app->get('/film', \App\Action\Film\FilmViewAction::class);
+    // // Films
+    // $app->get('/film', \App\Action\Film\FilmViewAction::class);
+
+    // Donne la liste des fakemons
+    $app->get('/fakemon', \App\Action\Film\FilmViewAction::class);
+
+    // Donne l'api key selon l'usager
+    $app->post('/apikey', \App\Action\Fakemon\ApiKeyAction::class);
 
 };
 
