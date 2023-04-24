@@ -15,6 +15,12 @@ return function (App $app) {
     // Ajouter un fakemon.
     $app->post('/fakemon', \App\Action\Fakemon\AjoutFakemonAction::class);
 
+    // Modifier un fakemon.
+    $app->put('/fakemon/{id}', \App\Action\Fakemon\UpdateFakemonAction::class);
+
+    // Supprimer un fakemon.
+    $app->delete('/fakemon/{id}', \App\Action\Fakemon\UpdateFakemonAction::class);
+
     // Donne la liste des fakemons
     $app->get('/fakemon', \App\Action\Fakemon\FakemonAction::class);
 

@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
-  version: 1.3.0
+  version: 1.7.6
   title: Fakedex
-  description: Le fakedex de fakemon céer pour un projet de rpg style pokemon.
+  description: Le fakedex de fakemon céer pour un projet de rpg style pokemon et le cadre du projet finale en cours de Services Web au Cégep de Victoriaville.
   
 servers: 
   - url: http://fakedex.loc
@@ -72,6 +72,200 @@ paths:
                 example:
                   api_key: "Compte invalide"
 
+
+  /fakemon/{id}:
+      put:
+        tags: 
+          - Fakemon
+        summary: Permet de modifier un fakemon.
+        description: Il y a besoin d'une clé api dans le header pour pouvoir modifier un fakemon.
+        security:
+        - ApiKeyAuth: [] 
+        requestBody:
+          description: Les information du fakemon a modifié.
+          required: true
+          content:
+            application/json:
+               schema:
+                type: object
+                properties:
+                  nom:
+                    type: string
+                  id_type1:
+                    type: integer
+                  id_type2:
+                    type: integer
+                  hp:
+                    type: integer
+                  atk:
+                    type: integer
+                  def:
+                    type: integer
+                  sp_atk:
+                    type: integer
+                  sp_def:
+                    type: integer
+                  speed: 
+                    type: integer
+                  description:
+                    type: string
+                example:
+                  nom: "Octonite"
+                  id_type1: 12
+                  id_type2: 1
+                  hp: 120
+                  atk: 50
+                  def: 300
+                  sp_atk: 250
+                  sp_def: 75
+                  speed: 60
+                  description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras placerat."
+                  
+        responses:
+          '200': 
+            description: Lorsque le fakemon a été modifié.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    nom:
+                      type: string
+                    id_type1:
+                      type: integer
+                    id_type2:
+                      type: integer
+                    hp:
+                      type: integer
+                    atk:
+                      type: integer
+                    def:
+                      type: integer
+                    sp_atk:
+                      type: integer
+                    sp_def:
+                      type: integer
+                    speed: 
+                      type: integer
+                    description:
+                      type: string
+                example:
+                  id: 253
+                  nom: "Octonite"
+                  id_type1: 12
+                  id_type2: 1
+                  hp: 120
+                  atk: 50
+                  def: 300
+                  sp_atk: 250
+                  sp_def: 75
+                  speed: 60
+                  description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras placerat."
+          '201': 
+            description: Lorsque le fakemon n'existait pas et en crée un nouveau à la place.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    nom:
+                      type: string
+                    id_type1:
+                      type: integer
+                    id_type2:
+                      type: integer
+                    hp:
+                      type: integer
+                    atk:
+                      type: integer
+                    def:
+                      type: integer
+                    sp_atk:
+                      type: integer
+                    sp_def:
+                      type: integer
+                    speed: 
+                      type: integer
+                    description:
+                      type: string
+                example:
+                  id: 500
+                  nom: "Octonite"
+                  id_type1: 12
+                  id_type2: 1
+                  hp: 120
+                  atk: 50
+                  def: 300
+                  sp_atk: 250
+                  sp_def: 75
+                  speed: 60
+                  description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras placerat."
+      delete:
+        tags: 
+          - Fakemon
+        summary: Recherche d'une clé api.
+        description: La clé d'api fourni est un UUID en string pour s'assurer que chacun est unique.
+        security:
+        - ApiKeyAuth: [] 
+        requestBody:
+          description: Les informations de l'usager existant.
+          required: true
+          content:
+            application/json:
+               schema:
+                type: object
+                properties:
+                  nom:
+                    type: string
+                  id_type1:
+                    type: integer
+                  id_type2:
+                    type: integer
+                  hp:
+                    type: integer
+                  atk:
+                    type: integer
+                  def:
+                    type: integer
+                  sp_atk:
+                    type: integer
+                  sp_def:
+                    type: integer
+                  speed: 
+                    type: integer
+                  description:
+                    type: string
+                example:
+                  username : 'usager'
+                  password : '1234'
+                  
+        responses:
+          '200': 
+            description: Lorsque les informationes sont valides 
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    api_key:
+                      type: string
+                  example:
+                    api_key: "e65d7004-a893-41ad-9436-4ecadf9ddc7e"
+          '403': 
+            description: Lorsque les informations sont invalides
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    api_key:
+                      type: string
+                  example:
+                    api_key: "Compte invalide"
 
   /fakemon:
     get:
@@ -154,44 +348,89 @@ paths:
       security:
       - ApiKeyAuth: [] 
       requestBody:
-        description: Les informations du fakemon qui a été ajouté.
+        description: Les informations du fakemon à ajouter.
         required: true
         content:
           application/json:
             schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                password:
-                  type: string
-              example:
-                username : 'usager'
-                password : '1234'
-                
+                type: object
+                properties:
+                  nom:
+                    type: string
+                  id_type1:
+                    type: integer
+                  id_type2:
+                    type: integer
+                  hp:
+                    type: integer
+                  atk:
+                    type: integer
+                  def:
+                    type: integer
+                  sp_atk:
+                    type: integer
+                  sp_def:
+                    type: integer
+                  speed: 
+                    type: integer
+                  description:
+                    type: string
+            example:
+              nom: "Megaroo"
+              id_type1: 12
+              id_type2: 1
+              hp: 120
+              atk: 50
+              def: 300
+              sp_atk: 250
+              sp_def: 75
+              speed: 60
+              description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras placerat."
+
+
       responses:
-        '200': 
-          description: Lorsque les informationes sont valides 
+        '201': 
+          description: Les informations du fakemon ajouté.
           content:
             application/json:
-              schema:
+               schema:
                 type: object
                 properties:
-                  api_key:
+                  id:
+                    type: integer
+                  nom:
+                    type: string
+                  id_type1:
+                    type: integer
+                  id_type2:
+                    type: integer
+                  hp:
+                    type: integer
+                  atk:
+                    type: integer
+                  def:
+                    type: integer
+                  sp_atk:
+                    type: integer
+                  sp_def:
+                    type: integer
+                  speed: 
+                    type: integer
+                  description:
                     type: string
                 example:
-                  api_key: "e65d7004-a893-41ad-9436-4ecadf9ddc7e"
-        '403': 
-          description: Lorsque les informations sont invalides
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  api_key:
-                    type: string
-                example:
-                  api_key: "Compte invalide"                
+                  id: 253
+                  nom: "Megaroo"
+                  id_type1: 12
+                  id_type2: 1
+                  hp: 120
+                  atk: 50
+                  def: 300
+                  sp_atk: 250
+                  sp_def: 75
+                  speed: 60
+                  description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras placerat."
+               
   /type:
     get:
       tags:

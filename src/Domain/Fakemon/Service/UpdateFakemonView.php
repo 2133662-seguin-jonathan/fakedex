@@ -7,7 +7,7 @@ use App\Domain\Fakemon\Repository\FakemonRepository;
 /**
  * Service.
  */
-final class AjoutFakemonView
+final class UpdateFakemonView
 {
     /**
      * @var FakemonRepository
@@ -25,17 +25,19 @@ final class AjoutFakemonView
     }
 
     /**
-     * Permet d'ajouter un fakemon à la bd.
-     * @param array informations du compte
+     * Permet de modifier un fakemon.
+     * @param array informations du fakemon
+     * @param int l'id du fakemon
      * @return array L'api key de l'usager
      */
-    public function ajoutFakemon(array $fakemon): array
+    public function updateFakemon(array $fakemon,int $id): array
     {
 
-        $fakemonResultat = $this->repository->insertFakemon($fakemon);
+        $fakemonResultat = $this->repository->updateFakemon($fakemon,$id);
 
         $resultat = [
-            "data"=> $fakemonResultat
+            "data"=> $fakemonResultat["data"],
+            "status"=> $fakemonResultat["status"]
         ];
 
         return $resultat;
