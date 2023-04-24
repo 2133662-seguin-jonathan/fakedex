@@ -2,6 +2,10 @@
 
 use Slim\App;
 
+header("Access-Control-Allow-Origin: *");
+header("Access-Control-Allow-Headers: Content-Type, Authorization");
+header("Access-Control-Allow-Methods: GET, POST, PUT, DELETE");
+
 return function (App $app) {
 
     $app->get('/', \App\Action\HomeAction::class)->setName('home');
@@ -19,7 +23,7 @@ return function (App $app) {
     $app->put('/fakemon/{id}', \App\Action\Fakemon\UpdateFakemonAction::class);
 
     // Supprimer un fakemon.
-    $app->delete('/fakemon/{id}', \App\Action\Fakemon\UpdateFakemonAction::class);
+    $app->delete('/fakemon/{id}', \App\Action\Fakemon\DeleteFakemonAction::class);
 
     // Donne la liste des fakemons
     $app->get('/fakemon', \App\Action\Fakemon\FakemonAction::class);

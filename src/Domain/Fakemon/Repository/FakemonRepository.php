@@ -108,6 +108,44 @@ class FakemonRepository
     }
 
 
+     /**
+     * Permet de supprimer un fakemon.
+     * 
+     * @param int l'id du fakemon
+     * @return DataResponse
+     */
+    public function deleteFakemon($id): array
+    {
+        $test = $this->afficherFakemonById($id);
+
+        if (empty($test)){
+           $resultat = [
+            "data"=> [],
+            "status"=>404
+           ];
+            
+            return $resultat ?? [];
+        }
+        else {
+            $sql = "DELETE FROM creature WHERE id=:id ;";
+    
+            $params = [
+                "id"=> $id
+            ];
+    
+            $query = $this->connection->prepare($sql);
+            $query->execute($params);
+
+            $resultat = [
+                "data"=>$test,
+                "status"=> 200
+            ];
+            
+            return $resultat ?? [];
+        }
+    }
+
+
     /**
      * Permet de modifier un fakemon
      * 

@@ -2,34 +2,30 @@
 
 namespace App\Action\Fakemon;
 
-use App\Domain\Fakemon\Service\UpdateFakemonView;
+use App\Domain\Fakemon\Service\DeleteFakemonView;
 use Psr\Http\Message\ResponseInterface;
 use Psr\Http\Message\ServerRequestInterface;
 
-final class UpdateFakemonAction
+final class DeleteFakemonAction
 {
-    private $updateFakemonView;
+    private $deleteFakemonView;
 
-    public function __construct(UpdateFakemonView $updateFakemonView)
+    public function __construct(DeleteFakemonView $deleteFakemonView)
     {
-        $this->updateFakemonView = $updateFakemonView;
+        $this->deleteFakemonView = $deleteFakemonView;
     }
 
     public function __invoke(
         ServerRequestInterface $request, 
         ResponseInterface $response
     ): ResponseInterface {
-
-        // Récupération des données du corps de la requête
-        $data = (array)$request->getParsedBody();
-
         // Récupération des parametres
         $fakemonId = $request->getAttribute('id');
-
-        $resultat = $this->updateFakemonView->updateFakemon($data,$fakemonId);
+        $resultat = $this->deleteFakemonView->deleteFakemon($fakemonId);
 
         $status = $resultat["status"];
 
+        
 
         // Construit la réponse HTTP
         $response->getBody()->write((string)json_encode($resultat["data"]));

@@ -207,65 +207,61 @@ paths:
       delete:
         tags: 
           - Fakemon
-        summary: Recherche d'une clé api.
-        description: La clé d'api fourni est un UUID en string pour s'assurer que chacun est unique.
+        summary: Permet de supprimer un fakemon selon son id.
+        description: Il y a besoin d'une clé api dans le header pour pouvoir supprimer un fakemon.
         security:
         - ApiKeyAuth: [] 
-        requestBody:
-          description: Les informations de l'usager existant.
-          required: true
-          content:
-            application/json:
-               schema:
-                type: object
-                properties:
-                  nom:
-                    type: string
-                  id_type1:
-                    type: integer
-                  id_type2:
-                    type: integer
-                  hp:
-                    type: integer
-                  atk:
-                    type: integer
-                  def:
-                    type: integer
-                  sp_atk:
-                    type: integer
-                  sp_def:
-                    type: integer
-                  speed: 
-                    type: integer
-                  description:
-                    type: string
-                example:
-                  username : 'usager'
-                  password : '1234'
                   
         responses:
           '200': 
-            description: Lorsque les informationes sont valides 
+            description: Lorsque le fakemon a été supprimer avec succès.
+            content:
+              application/json:
+                 schema:
+                  type: object
+                  properties:
+                    id:
+                      type: integer
+                    nom:
+                      type: string
+                    id_type1:
+                      type: integer
+                    id_type2:
+                      type: integer
+                    hp:
+                      type: integer
+                    atk:
+                      type: integer
+                    def:
+                      type: integer
+                    sp_atk:
+                      type: integer
+                    sp_def:
+                      type: integer
+                    speed: 
+                      type: integer
+                    description:
+                      type: string
+                  example:
+                    id: 500
+                    nom: "Octonite"
+                    id_type1: 12
+                    id_type2: 1
+                    hp: 120
+                    atk: 50
+                    def: 300
+                    sp_atk: 250
+                    sp_def: 75
+                    speed: 60
+                    description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras placerat."
+          '404': 
+            description: Lorsque le id n'est pas valide.
             content:
               application/json:
                 schema:
-                  type: object
-                  properties:
-                    api_key:
-                      type: string
+                  type: array
                   example:
-                    api_key: "e65d7004-a893-41ad-9436-4ecadf9ddc7e"
-          '403': 
-            description: Lorsque les informations sont invalides
-            content:
-              application/json:
-                schema:
-                  type: object
-                  properties:
-                    api_key:
-                      type: string
-                  example:
-                    api_key: "Compte invalide"
+                    []
 
   /fakemon:
     get:
