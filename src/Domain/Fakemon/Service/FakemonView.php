@@ -7,7 +7,7 @@ use App\Domain\Fakemon\Repository\FakemonRepository;
 /**
  * Service.
  */
-final class ApiKeyView
+final class FakemonView
 {
     /**
      * @var FakemonRepository
@@ -25,26 +25,18 @@ final class ApiKeyView
     }
 
     /**
-     * Sélectionne la clé api relié au compte
+     * Sélectionne tous les fakemons.
      * @param array informations du compte
      * @return array L'api key de l'usager
      */
-    public function getApiKey(array $compte): array
+    public function listeFakemon(): array
     {
 
-        $apikey = $this->repository->apiKey($compte);
+        $listeFakemon = $this->repository->selectFakemon();
 
         $resultat = [
-            "api_key"=>"Compte invalide"
+            "data"=> $listeFakemon
         ];
-
-        if (!empty($apikey)){
-            if(password_verify($compte["password"],$apikey["password"])){
-                $resultat = [
-                    "api_key"=>$apikey["api_key"]
-                ];
-            }
-        }
 
         return $resultat;
     }

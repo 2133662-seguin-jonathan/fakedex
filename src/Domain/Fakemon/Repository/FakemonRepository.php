@@ -48,5 +48,46 @@ class FakemonRepository
         return $result[0] ?? [];
     }
 
+    /**
+     * Sélectionne la liste des fakemons
+     * 
+     * @return DataResponse
+     */
+    public function selectFakemon(): array
+    {
+        $sql = "SELECT * FROM creature ;";
+
+
+        $query = $this->connection->prepare($sql);
+        $query->execute();
+
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        
+        
+        return $result ?? [];
+    }
+
+
+    /**
+     * Sélectionne la liste des ftypes
+     * 
+     * @return DataResponse
+     */
+    public function selectType(): array
+    {
+        $sql = "SELECT * FROM type ORDER BY nom ;";
+
+
+        $query = $this->connection->prepare($sql);
+        $query->execute();
+
+        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+
+        
+        
+        return $result ?? [];
+    }
+
 }
 

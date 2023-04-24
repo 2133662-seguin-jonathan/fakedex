@@ -13,7 +13,10 @@ return function (App $app) {
     // $app->get('/film', \App\Action\Film\FilmViewAction::class);
 
     // Donne la liste des fakemons
-    $app->get('/fakemon', \App\Action\Film\FilmViewAction::class);
+    $app->get('/fakemon', \App\Action\Fakemon\FakemonAction::class);
+
+    // Donne la liste des types
+    $app->get('/type', \App\Action\Fakemon\TypeAction::class);
 
     // Donne l'api key selon l'usager
     $app->post('/apikey', \App\Action\Fakemon\ApiKeyAction::class);
