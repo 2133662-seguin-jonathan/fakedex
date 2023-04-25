@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 1.7.6
+  version: 1.8.3
   title: Fakedex
   description: Le fakedex de fakemon céer pour un projet de rpg style pokemon et le cadre du projet finale en cours de Services Web au Cégep de Victoriaville.
   
@@ -27,30 +27,16 @@ paths:
                     message : 'Générateur de fakemon'
   
   /apikey:
-    post:
+    get:
       tags: 
-        - ApiKey
+        - Api Key
       summary: Recherche d'une clé api.
       description: La clé d'api fourni est un UUID en string pour s'assurer que chacun est unique.
-      requestBody:
-        description: Les informations de l'usager existant.
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                username:
-                  type: string
-                password:
-                  type: string
-              example:
-                username : 'usager'
-                password : '1234'
-                
+      security:
+        - AccountAuth: []           
       responses:
         '200': 
-          description: Lorsque les informationes sont valides 
+          description: Lorsque les informationes sont valides dans le header.
           content:
             application/json:
               schema:
@@ -60,8 +46,8 @@ paths:
                     type: string
                 example:
                   api_key: "e65d7004-a893-41ad-9436-4ecadf9ddc7e"
-        '403': 
-          description: Lorsque les informations sont invalides
+        '401': 
+          description: Lorsque les informations sont invalides dans le header.
           content:
             application/json:
               schema:
@@ -481,9 +467,13 @@ paths:
 
 components:
   securitySchemes:
-    ApiKeyAuth:        # arbitrary name for the security scheme
-      type: apiKey
-      in: header      # can be "header", "query" or "cookie"
-      name: Authorization # name of the header, query parameter or cookie
-      description: La clé d'api à mettre.
+    ApiKeyAuth:        
+      type: http
+      scheme: bearer
+      description: "La clé api doit être encoder en base64(username password) Exemple de valeur: apikey MDZmNzEzMWEtNjYxMy00YjM5LWEwMWQtYTY3ZjA4ZmUyN2Y2"
+    AccountAuth:
+      type: http
+      scheme: bearer
+      description: "Les infos doivent être encoder en base64(username password) Exemple de valeur: account dXNlciAxMjM0"
+
       

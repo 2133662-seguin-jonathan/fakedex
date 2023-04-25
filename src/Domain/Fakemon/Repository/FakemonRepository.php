@@ -35,7 +35,7 @@ class FakemonRepository
         $sql = "SELECT api_key, password FROM usager WHERE username = :username ;";
 
         $params = [
-            "username" => $compte["username"] ?? null
+            "username" => $compte["username"] ?? ""
         ];
 
         $query = $this->connection->prepare($sql);

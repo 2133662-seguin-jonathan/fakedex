@@ -32,7 +32,9 @@ return function (App $app) {
     $app->get('/type', \App\Action\Fakemon\TypeAction::class);
 
     // Donne l'api key selon l'usager
-    $app->post('/apikey', \App\Action\Fakemon\ApiKeyAction::class);
+    $app->get('/apikey', \App\Action\Fakemon\ApiKeyAction::class);
+
+    base64_encode("admin fakemon");
 
 };
 

@@ -16,20 +16,35 @@ final class ApiKeyAction
     }
 
     public function __invoke(
-        ServerRequestInterface $request, 
+        ServerRequestInterface $request,
         ResponseInterface $response
     ): ResponseInterface {
 
-        // Récupération des données du corps de la requête
-        $data = (array)$request->getParsedBody();
+        $resultat = [
+            "api_key" => "Header invalide"
+        ];
+        $status = 401;
 
-        $resultat = $this->apiKeyview->getApiKey($data);
+        $valeurAuth = $request->getHeaderLine("Authorization");
+        if (explode(" ", $valeurAuth)[0] == "account") {
+            $token = explode(" ", $valeurAuth)[1];
+            if ( base64_encode(base64_decode($token, true)) === $token){
+                $decodeToken = base64_decode($token);
 
-        $status = 200;
+                $data = [
+                    "username" => explode(" ", $decodeToken)[0] ?? "",
+                    "password" => explode(" ", $decodeToken)[1] ?? ""
+                ];
 
-        if ($resultat["api_key"] == "Compte invalide"){
-            $status = 403;
+                $resultat = $this->apiKeyview->getApiKey($data);
+
+                if ($resultat["api_key"] != "Compte invalide") {
+                    $status = 200;
+                }
+            }
         }
+
+
 
         // Construit la réponse HTTP
         $response->getBody()->write((string)json_encode($resultat));
