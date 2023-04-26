@@ -27,12 +27,15 @@ final class ApiKeyView
     /**
      * Sélectionne la clé api relié au compte
      * @param array informations du compte
+     * @param int indicateur de si on doit générer un nouvel id
      * @return array L'api key de l'usager
      */
-    public function getApiKey(array $compte): array
+    public function getApiKey(array $compte, int $nouvelle): array
     {
+        $apikey = [];
 
         $apikey = $this->repository->apiKey($compte);
+        
 
         $resultat = [
             "api_key"=>"Compte invalide"
@@ -40,8 +43,21 @@ final class ApiKeyView
 
         if (!empty($apikey)){
             if(password_verify($compte["password"],$apikey["password"])){
+                if ($nouvelle == 0){
+                    $resultat = [
+                        "api_key"=>$apikey["api_key"]
+                    ];
+                }
+               else if ($nouvelle == 1){
+                    $resultat = $this->repository->creerCleCompte($compte);
+               }
+            }
+        }
+        else {
+            $usager = $this->repository->creerUsager($compte);
+            if (!empty($usager)){
                 $resultat = [
-                    "api_key"=>$apikey["api_key"]
+                    "api_key"=>$usager["api_key"]
                 ];
             }
         }

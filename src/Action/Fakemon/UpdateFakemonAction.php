@@ -16,23 +16,40 @@ final class UpdateFakemonAction
     }
 
     public function __invoke(
-        ServerRequestInterface $request, 
+        ServerRequestInterface $request,
         ResponseInterface $response
     ): ResponseInterface {
 
         // Récupération des données du corps de la requête
         $data = (array)$request->getParsedBody();
+        
+        $resultat = [
+            "erreur" => "Requête invalide"
+        ];
+        $status = 401;
 
-        // Récupération des parametres
-        $fakemonId = $request->getAttribute('id');
+        $valeurAuth = $request->getHeaderLine("Authorization");
+        if (explode(" ", $valeurAuth)[0] == "apikey") {
+            $token = explode(" ", $valeurAuth)[1];
+            if (base64_encode(base64_decode($token, true)) === $token) {
+                $apikey = base64_decode($token);
+                // Récupération des parametres
+                $fakemonId = $request->getAttribute('id');
 
-        $resultat = $this->updateFakemonView->updateFakemon($data,$fakemonId);
+                $resultatTest = $this->updateFakemonView->updateFakemon($data, $fakemonId,$apikey);
+                if (!empty($resultatTest)){
+                    $resultat = $resultatTest["data"];
+                    $status = $resultatTest["status"];
+                }
+                
+            }
+        }
 
-        $status = $resultat["status"];
+
 
 
         // Construit la réponse HTTP
-        $response->getBody()->write((string)json_encode($resultat["data"]));
+        $response->getBody()->write((string)json_encode($resultat));
 
         return $response
             ->withHeader('Content-Type', 'application/json')

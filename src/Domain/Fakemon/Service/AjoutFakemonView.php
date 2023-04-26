@@ -27,16 +27,20 @@ final class AjoutFakemonView
     /**
      * Permet d'ajouter un fakemon à la bd.
      * @param array informations du compte
+     * @param string la clé d'api
      * @return array L'api key de l'usager
      */
-    public function ajoutFakemon(array $fakemon): array
+    public function ajoutFakemon(array $fakemon,string $apikey): array
     {
+        $resultat = [];
+        $idUsager = $this->repository->chercherUsagerId($apikey);
+        if (!empty($idUsager)) {
+            $fakemonResultat = $this->repository->insertFakemon($fakemon,$apikey);
 
-        $fakemonResultat = $this->repository->insertFakemon($fakemon);
-
-        $resultat = [
-            "data"=> $fakemonResultat
-        ];
+            $resultat = [
+                "data"=> $fakemonResultat
+            ];
+        }
 
         return $resultat;
     }

@@ -25,7 +25,7 @@ return function (App $app) {
     // Supprimer un fakemon.
     $app->delete('/fakemon/{id}', \App\Action\Fakemon\DeleteFakemonAction::class);
 
-    // Donne la liste des fakemons
+    // Donne la liste des fakemons de l'usager.
     $app->get('/fakemon', \App\Action\Fakemon\FakemonAction::class);
 
     // Donne la liste des types
@@ -33,8 +33,6 @@ return function (App $app) {
 
     // Donne l'api key selon l'usager
     $app->get('/apikey', \App\Action\Fakemon\ApiKeyAction::class);
-
-    base64_encode("admin fakemon");
 
 };
 

@@ -29,16 +29,20 @@ final class DeleteFakemonView
      * @param integer l'id du fakemon
      * @return array L'api key de l'usager
      */
-    public function deleteFakemon(int $id): array
+    public function deleteFakemon(int $id,string $apikey): array
     {
+        $resultat = [];
 
-        $fakemonResultat = $this->repository->deleteFakemon($id);
-
-        $resultat = [
-            "data"=> $fakemonResultat["data"],
-            "status"=> $fakemonResultat["status"]
-        ];
-
+        $idUsager = $this->repository->chercherUsagerId($apikey);
+        if (!empty($idUsager)) {
+            $fakemonResultat = $this->repository->deleteFakemon($id,$idUsager["id"]);
+            if (!empty($fakemonResultat)){
+                $resultat = [
+                    "data"=> $fakemonResultat["data"],
+                    "status"=> $fakemonResultat["status"]
+                ];
+            }
+        }
         return $resultat;
     }
 

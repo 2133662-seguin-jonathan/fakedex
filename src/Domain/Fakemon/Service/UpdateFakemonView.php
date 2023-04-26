@@ -28,20 +28,23 @@ final class UpdateFakemonView
      * Permet de modifier un fakemon.
      * @param array informations du fakemon
      * @param int l'id du fakemon
+     * @param string la clé api
      * @return array L'api key de l'usager
      */
-    public function updateFakemon(array $fakemon,int $id): array
+    public function updateFakemon(array $fakemon, int $idFakemon, string $apikey): array
     {
+        $resultat = [];
+        $apikeyExiste = $this->repository->chercherUsagerId($apikey);
+        if (!empty($apikeyExiste)) {
+            $fakemonResultat = $this->repository->updateFakemon($fakemon, $idFakemon, $apikey);
 
-        $fakemonResultat = $this->repository->updateFakemon($fakemon,$id);
+            $resultat = [
+                "data" => $fakemonResultat["data"],
+                "status" => $fakemonResultat["status"]
+            ];
+        }
 
-        $resultat = [
-            "data"=> $fakemonResultat["data"],
-            "status"=> $fakemonResultat["status"]
-        ];
 
         return $resultat;
     }
-
-
 }

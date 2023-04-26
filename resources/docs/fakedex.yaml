@@ -30,10 +30,17 @@ paths:
     get:
       tags: 
         - Api Key
-      summary: Recherche d'une clé api.
-      description: La clé d'api fourni est un UUID en string pour s'assurer que chacun est unique.
+      summary: Recherche d'une clé api ou créer/renouvelle une clé api pour un compte.
+      description: La clé d'api fourni est un UUID en string pour s'assurer que chacune est unique.
       security:
-        - AccountAuth: []           
+        - AccountAuth: []
+      parameters:
+        - in: query    
+          name:  nouvelle
+          schema:
+            type: integer
+            default: 0
+          description: "Le paramètre est optionnel. Cependant, il prend en compte seulement la valeur 0 et 1. (0 = faux et 1 = vrai)"   
       responses:
         '200': 
           description: Lorsque les informationes sont valides dans le header.
@@ -56,7 +63,7 @@ paths:
                   api_key:
                     type: string
                 example:
-                  api_key: "Compte invalide"
+                  erreur: "Requête invalide"
 
 
   /fakemon/{id}:
@@ -137,6 +144,8 @@ paths:
                       type: integer
                     description:
                       type: string
+                    id_usager:
+                      type: integer
                 example:
                   id: 253
                   nom: "Octonite"
@@ -149,6 +158,7 @@ paths:
                   sp_def: 75
                   speed: 60
                   description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras placerat."
+                  id_usager: 500
           '201': 
             description: Lorsque le fakemon n'existait pas et en crée un nouveau à la place.
             content:
@@ -178,6 +188,8 @@ paths:
                       type: integer
                     description:
                       type: string
+                    id_usager:
+                      type: integer
                 example:
                   id: 500
                   nom: "Octonite"
@@ -190,6 +202,18 @@ paths:
                   sp_def: 75
                   speed: 60
                   description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras placerat."
+                  id_usager: 500
+          '401': 
+            description: Lorsque les informations sont invalides dans le header.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    api_key:
+                      type: string
+                  example:
+                    erreur: "Requête invalide"
       delete:
         tags: 
           - Fakemon
@@ -197,7 +221,6 @@ paths:
         description: Il y a besoin d'une clé api dans le header pour pouvoir supprimer un fakemon.
         security:
         - ApiKeyAuth: [] 
-                  
         responses:
           '200': 
             description: Lorsque le fakemon a été supprimer avec succès.
@@ -228,6 +251,8 @@ paths:
                       type: integer
                     description:
                       type: string
+                    id_usager:
+                      type: integer
                   example:
                     id: 500
                     nom: "Octonite"
@@ -240,20 +265,24 @@ paths:
                     sp_def: 75
                     speed: 60
                     description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras placerat."
-          '404': 
-            description: Lorsque le id n'est pas valide.
+                    id_usager: 222
+          '401': 
+            description: Lorsque les informations sont invalides dans le header.
             content:
               application/json:
                 schema:
-                  type: array
+                  type: object
+                  properties:
+                    api_key:
+                      type: string
                   example:
-                    []
+                    erreur: "Requête invalide"
 
   /fakemon:
     get:
       tags:
         - Fakemon
-      summary: Récuppérer la liste des fakemon qui ont été générer.
+      summary: Récuppérer la liste des fakemon qui ont été générer par l'usager.
       description: Il y a besoin d'une clé api dans le header pour pouvoir avoir accès à la liste.
       security:
       - ApiKeyAuth: [] 
@@ -292,6 +321,8 @@ paths:
                           type: integer
                         description:
                           type: string
+                        id_usager:
+                          type: integer
                 example:
                     data : [
                       {
@@ -305,23 +336,24 @@ paths:
                         sp_atk: 100,
                         sp_def: 100,
                         speed: 25,
-                        description: "Monstre mythologique des océans qui a détruit l'Atlantide selon la légende."
+                        description: "Monstre mythologique des océans qui a détruit l'Atlantide selon la légende.",
+                        id_usager: 24
                       },
                       {
                         ...
                       }
                     ]
-        '403': 
-          description: Indique que la clé d'api est invalide.
+        '401': 
+          description: Lorsque les informations sont invalides dans le header.
           content:
             application/json:
               schema:
                 type: object
                 properties:
-                  data:
-                    type: array
+                  api_key:
+                    type: string
                 example:
-                    data : []
+                  erreur: "Requête invalide"
     post:
       tags: 
         - Fakemon
@@ -400,6 +432,8 @@ paths:
                     type: integer
                   description:
                     type: string
+                  id_usager:
+                    type: integer
                 example:
                   id: 253
                   nom: "Megaroo"
@@ -412,6 +446,18 @@ paths:
                   sp_def: 75
                   speed: 60
                   description: "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Cras placerat."
+                  id_usager: 125
+        '401': 
+          description: Lorsque les informations sont invalides dans le header.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  api_key:
+                    type: string
+                example:
+                  erreur: "Requête invalide"
                
   /type:
     get:

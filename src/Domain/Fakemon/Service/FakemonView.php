@@ -25,21 +25,24 @@ final class FakemonView
     }
 
     /**
-     * Sélectionne tous les fakemons.
-     * @param array informations du compte
-     * @return array L'api key de l'usager
+     * Sélectionne tous les fakemons de l'usager.
+     * @param string la cle api
+     * @return array la liste des fakemons
      */
-    public function listeFakemon(): array
+    public function listeFakemon(string $apikey): array
     {
+        $resultat = [];
 
-        $listeFakemon = $this->repository->selectFakemon();
+        $idUsager = $this->repository->chercherUsagerId($apikey);
+        if (!empty($idUsager)) {
+            $listeFakemon = $this->repository->selectFakemon($idUsager["id"]);
 
-        $resultat = [
-            "data"=> $listeFakemon
-        ];
+            $resultat = [
+                "data" => $listeFakemon
+            ];
+        }
+
 
         return $resultat;
     }
-
-
 }

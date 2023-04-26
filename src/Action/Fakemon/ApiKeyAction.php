@@ -21,9 +21,12 @@ final class ApiKeyAction
     ): ResponseInterface {
 
         $resultat = [
-            "api_key" => "Header invalide"
+            "erreur" => "Requête invalide"
         ];
         $status = 401;
+
+        $queryParams = $request->getQueryParams() ?? [];
+        $nouvelle = $queryParams["nouvelle"] ?? 0;
 
         $valeurAuth = $request->getHeaderLine("Authorization");
         if (explode(" ", $valeurAuth)[0] == "account") {
@@ -36,7 +39,7 @@ final class ApiKeyAction
                     "password" => explode(" ", $decodeToken)[1] ?? ""
                 ];
 
-                $resultat = $this->apiKeyview->getApiKey($data);
+                $resultat = $this->apiKeyview->getApiKey($data,$nouvelle);
 
                 if ($resultat["api_key"] != "Compte invalide") {
                     $status = 200;
