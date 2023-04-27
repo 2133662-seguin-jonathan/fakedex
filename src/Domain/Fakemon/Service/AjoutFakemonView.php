@@ -36,7 +36,7 @@ final class AjoutFakemonView
         $idUsager = $this->repository->chercherUsagerId($apikey);
         if (!empty($idUsager)) {
             $fakemonResultat = $this->repository->insertFakemon($fakemon,$apikey);
-
+            $fakemonResultat["data"]["description"] = stripslashes($fakemonResultat["data"]["description"]);
             $resultat = [
                 "data"=> $fakemonResultat
             ];

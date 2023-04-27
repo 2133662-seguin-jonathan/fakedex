@@ -20,12 +20,24 @@ final class TypeAction
         ResponseInterface $response
     ): ResponseInterface {
 
-        // Récupération des données du corps de la requête
-        $data = (array)$request->getParsedBody();
+        $resultat = [
+            "erreur" => "Requête invalide"
+        ];
+        $status = 401;
 
-        $resultat = $this->typeView->listeType();
-
-        $status = 200;
+        $valeurAuth = $request->getHeaderLine("Authorization");
+        if (explode(" ", $valeurAuth)[0] == "apikey") {
+            $token = explode(" ", $valeurAuth)[1];
+            if (base64_encode(base64_decode($token, true)) === $token) {
+                $apikey = base64_decode($token);
+                
+                $resultatTest = $this->typeView->listeType($apikey);
+                if (!empty($resultatTest)){
+                    $resultat = $resultatTest;
+                    $status = 200;
+                }
+            }
+        }
 
         
 

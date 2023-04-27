@@ -26,17 +26,23 @@ final class TypeView
 
     /**
      * Sélectionne tous les types.
-     * @param array informations du compte
+     * @param string la clé api
      * @return array L'api key de l'usager
      */
-    public function listeType(): array
+    public function listeType(string $apikey): array
     {
 
-        $listeFakemon = $this->repository->selectType();
-
-        $resultat = [
-            "data"=> $listeFakemon
-        ];
+        $resultat = [];
+        $apikeyExiste = $this->repository->chercherUsagerId($apikey);
+        if (!empty($apikeyExiste)) {
+            $listeType = $this->repository->selectType();
+            if (!empty($listeType)){
+                $resultat = [
+                    "data"=> $listeType
+                ];
+            }
+        }
+        
 
         return $resultat;
     }

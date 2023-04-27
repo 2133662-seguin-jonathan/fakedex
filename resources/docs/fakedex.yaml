@@ -1,8 +1,8 @@
 openapi: 3.0.0
 info:
-  version: 1.8.3
+  version: 1.9.5
   title: Fakedex
-  description: Le fakedex de fakemon céer pour un projet de rpg style pokemon et le cadre du projet finale en cours de Services Web au Cégep de Victoriaville.
+  description: Le fakedex de fakemon créer pour un projet de rpg style pokemon et le cadre du projet finale en cours de Services Web au Cégep de Victoriaville.
   
 servers: 
   - url: http://fakedex.loc
@@ -277,6 +277,17 @@ paths:
                       type: string
                   example:
                     erreur: "Requête invalide"
+          '404': 
+            description: Lorsque le id fourni est inexistant.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    api_key:
+                      type: string
+                  example:
+                    erreur: "Id inexistant"
 
   /fakemon:
     get:
@@ -340,7 +351,7 @@ paths:
                         id_usager: 24
                       },
                       {
-                        ...
+                        ...: ...
                       }
                     ]
         '401': 
@@ -492,23 +503,23 @@ paths:
                       },
                       {
                         id: 2,
-                        .nom: "Normal"
+                        nom: "Normal"
                       },
                       {
-                        ...
+                        ...: ...
                       }
                     ]
-        '403': 
-          description: Indique que la clé d'api est invalide.
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  data:
-                    type: array
-                example:
-                    data : []
+        '401': 
+            description: Lorsque les informations sont invalides dans le header.
+            content:
+              application/json:
+                schema:
+                  type: object
+                  properties:
+                    api_key:
+                      type: string
+                  example:
+                    erreur: "Requête invalide"
    
 
 components:
@@ -516,10 +527,10 @@ components:
     ApiKeyAuth:        
       type: http
       scheme: bearer
-      description: "La clé api doit être encoder en base64(username password) Exemple de valeur: apikey MDZmNzEzMWEtNjYxMy00YjM5LWEwMWQtYTY3ZjA4ZmUyN2Y2"
+      description: "La clé api doit être encoder en base64('27189210-4736-498f-9c54-e15f6a1fdfd6') Exemple de valeur: apikey MjcxODkyMTAtNDczNi00OThmLTljNTQtZTE1ZjZhMWZkZmQ2"
     AccountAuth:
       type: http
       scheme: bearer
-      description: "Les infos doivent être encoder en base64(username password) Exemple de valeur: account dXNlciAxMjM0"
+      description: "Les infos doivent être encoder en base64('username password') Exemple de valeur: account dXNlciAxMjM0"
 
       

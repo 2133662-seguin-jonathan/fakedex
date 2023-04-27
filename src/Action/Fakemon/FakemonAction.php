@@ -27,7 +27,7 @@ final class FakemonAction
             "erreur" => "Requête invalide"
         ];
         $status = 401;
-
+        
         $valeurAuth = $request->getHeaderLine("Authorization");
         if (explode(" ", $valeurAuth)[0] == "apikey") {
             $token = explode(" ", $valeurAuth)[1];

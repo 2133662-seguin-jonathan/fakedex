@@ -34,14 +34,15 @@ final class UpdateFakemonView
     public function updateFakemon(array $fakemon, int $idFakemon, string $apikey): array
     {
         $resultat = [];
-        $apikeyExiste = $this->repository->chercherUsagerId($apikey);
-        if (!empty($apikeyExiste)) {
-            $fakemonResultat = $this->repository->updateFakemon($fakemon, $idFakemon, $apikey);
-
-            $resultat = [
-                "data" => $fakemonResultat["data"],
-                "status" => $fakemonResultat["status"]
-            ];
+        $idUsager = $this->repository->chercherUsagerId($apikey);
+        if (!empty($idUsager)) {
+            $fakemonResultat = $this->repository->updateFakemon($fakemon, $idFakemon, $apikey,$idUsager["id"]);
+            if (!empty($fakemonResultat)){
+                $resultat = [
+                    "data" => $fakemonResultat["data"],
+                    "status" => $fakemonResultat["status"]
+                ];
+            }
         }
 
 

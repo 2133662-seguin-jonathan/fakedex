@@ -56,7 +56,7 @@ class FakemonRepository
         $sql = "SELECT api_key, password FROM usager WHERE username = :username ;";
 
         $params = [
-            "username" => $compte["username"] ?? ""
+            "username" => htmlspecialchars($compte["username"],ENT_QUOTES) ?? ""
         ];
         $query = $this->connection->prepare($sql);
         $query->execute($params);
@@ -91,7 +91,7 @@ class FakemonRepository
 
         $params = [
             "apikey" => $cleNouv,
-            "username" => $compte["username"]
+            "username" => htmlspecialchars($compte["username"],ENT_QUOTES)
         ];
 
         $query = $this->connection->prepare($sql);
@@ -117,7 +117,7 @@ class FakemonRepository
         VALUES (:username,:password,:api_key);";
 
         $params = [
-            "username" => $compte["username"],
+            "username" => htmlspecialchars($compte["username"],ENT_QUOTES),
             "password" => password_hash($compte["password"], PASSWORD_DEFAULT),
             "api_key" => $this->guidv4()
         ];
@@ -176,8 +176,6 @@ class FakemonRepository
 
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
 
-
-
         return $result[0] ?? [];
     }
 
@@ -201,7 +199,7 @@ class FakemonRepository
         VALUES (:nom,:id_type1,:id_type2,:hp,:atk,:def,:sp_atk,:sp_def,:speed,:description,:id_usager);";
 
         $params = [
-            "nom" => $fakemon["nom"] ?? "",
+            "nom" => htmlspecialchars($fakemon["nom"],ENT_QUOTES) ?? "",
             "id_type1" => $fakemon["id_type1"] ?? 1,
             "id_type2" => $fakemon["id_type2"] ?? 1,
             "hp" => $fakemon["hp"] ?? 0,
@@ -210,7 +208,7 @@ class FakemonRepository
             "sp_atk" => $fakemon["sp_atk"] ?? 0,
             "sp_def" => $fakemon["sp_def"] ?? 0,
             "speed" => $fakemon["speed"] ?? 0,
-            "description" => $fakemon["description"] ?? "",
+            "description" => htmlspecialchars($fakemon["description"],ENT_QUOTES) ?? "",
             "id_usager" => $idUsager["id"]
         ];
 
@@ -265,8 +263,11 @@ class FakemonRepository
         $test = $this->afficherFakemonById($id);
 
         if (empty($test)) {
+            $data = [
+                "erreur"=> "Id inexistant"
+            ];
             $resultat = [
-                "data" => [],
+                "data" => $data,
                 "status" => 404
             ];
             return $resultat ?? [];
@@ -301,9 +302,10 @@ class FakemonRepository
      * 
      * @param array les informations du fakemon
      * @param string la clé d'api
+     * @param int l'id de l'usager
      * @return DataResponse
      */
-    public function updateFakemon(array $fakemon, int $idFakemon, string $apikey): array
+    public function updateFakemon(array $fakemon, int $idFakemon, string $apikey, int $idUsager): array
     {
 
         $test = $this->afficherFakemonById($idFakemon);
@@ -317,33 +319,39 @@ class FakemonRepository
 
             return $resultat ?? [];
         } else {
-            $sql = "UPDATE creature
-             SET nom=:nom,id_type1=:id_type1,id_type2=:id_type2,hp=:hp,atk=:atk,def=:def,sp_atk=:sp_atk,sp_def=:sp_def,speed=:speed,description=:description
-              WHERE id = :id";
+            if ($test["id_usager"] == $idUsager) {
+                $sql = "UPDATE creature
+                SET nom=:nom,id_type1=:id_type1,id_type2=:id_type2,hp=:hp,atk=:atk,def=:def,sp_atk=:sp_atk,sp_def=:sp_def,speed=:speed,description=:description
+                WHERE id = :id";
 
-            $params = [
-                "id" => $idFakemon,
-                "nom" => $fakemon["nom"] ?? "",
-                "id_type1" => $fakemon["id_type1"] ?? 1,
-                "id_type2" => $fakemon["id_type2"] ?? 1,
-                "hp" => $fakemon["hp"] ?? 0,
-                "atk" => $fakemon["atk"] ?? 0,
-                "def" => $fakemon["def"] ?? 0,
-                "sp_atk" => $fakemon["sp_atk"] ?? 0,
-                "sp_def" => $fakemon["sp_def"] ?? 0,
-                "speed" => $fakemon["speed"] ?? 0,
-                "description" => $fakemon["description"] ?? ""
-            ];
+                $params = [
+                    "id" => $idFakemon,
+                    "nom" => htmlspecialchars($fakemon["nom"],ENT_QUOTES) ?? "",
+                    "id_type1" => $fakemon["id_type1"] ?? 1,
+                    "id_type2" => $fakemon["id_type2"] ?? 1,
+                    "hp" => $fakemon["hp"] ?? 0,
+                    "atk" => $fakemon["atk"] ?? 0,
+                    "def" => $fakemon["def"] ?? 0,
+                    "sp_atk" => $fakemon["sp_atk"] ?? 0,
+                    "sp_def" => $fakemon["sp_def"] ?? 0,
+                    "speed" => $fakemon["speed"] ?? 0,
+                    "description" => htmlspecialchars($fakemon["description"],ENT_QUOTES) ?? ""
+                ];
 
-            $query = $this->connection->prepare($sql);
-            $query->execute($params);
+                $query = $this->connection->prepare($sql);
+                $query->execute($params);
 
-            $resultat = [
-                "data" => $this->afficherFakemonById($idFakemon),
-                "status" => 200
-            ];
+                $resultat = [
+                    "data" => $this->afficherFakemonById($idFakemon),
+                    "status" => 200
+                ];
 
-            return $resultat ?? [];
+                return $resultat ?? [];
+            }
+            else {
+                return [];
+            }
+            
         }
     }
 
@@ -364,8 +372,6 @@ class FakemonRepository
         $query->execute($params);
 
         $result = $query->fetchAll(PDO::FETCH_ASSOC);
-
-
 
         return $result ?? [];
     }
