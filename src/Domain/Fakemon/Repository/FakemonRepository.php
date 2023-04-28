@@ -53,28 +53,32 @@ class FakemonRepository
      */
     public function apiKey($compte): array
     {
-        $sql = "SELECT api_key, password FROM usager WHERE username = :username ;";
+        try {
+            $sql = "SELECT api_key, password FROM usager WHERE username = :username ;";
 
-        $params = [
-            "username" => htmlspecialchars($compte["username"],ENT_QUOTES) ?? ""
-        ];
-        $query = $this->connection->prepare($sql);
-        $query->execute($params);
+            $params = [
+                "username" => htmlspecialchars($compte["username"], ENT_QUOTES) ?? ""
+            ];
+            $query = $this->connection->prepare($sql);
+            $query->execute($params);
 
-        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+            $result = $query->fetchAll(PDO::FETCH_ASSOC);
 
-        $apikey = $result[0] ?? [];
+            $apikey = $result[0] ?? [];
 
-        if (!empty($apikey)) {
-            if ($apikey["api_key"] == "") {
-                $resultat = $this->creerCleCompte($compte);
-                $apikey["api_key"] = $resultat["api_key"];
+            if (!empty($apikey)) {
+                if ($apikey["api_key"] == "") {
+                    $resultat = $this->creerCleCompte($compte);
+                    $apikey["api_key"] = $resultat["api_key"];
+                }
+            } else {
+                $apikey = [];
             }
-        } else {
-            $apikey = [];
-        }
 
-        return $apikey;
+            return $apikey;
+        } catch (\Throwable $th) {
+            return [];
+        }
     }
 
     /**
@@ -91,7 +95,7 @@ class FakemonRepository
 
         $params = [
             "apikey" => $cleNouv,
-            "username" => htmlspecialchars($compte["username"],ENT_QUOTES)
+            "username" => htmlspecialchars($compte["username"], ENT_QUOTES)
         ];
 
         $query = $this->connection->prepare($sql);
@@ -113,22 +117,26 @@ class FakemonRepository
      */
     public function creerUsager($compte): array
     {
-        $sql = "INSERT INTO usager (username,password,api_key) 
+        try {
+            $sql = "INSERT INTO usager (username,password,api_key) 
         VALUES (:username,:password,:api_key);";
 
-        $params = [
-            "username" => htmlspecialchars($compte["username"],ENT_QUOTES),
-            "password" => password_hash($compte["password"], PASSWORD_DEFAULT),
-            "api_key" => $this->guidv4()
-        ];
+            $params = [
+                "username" => htmlspecialchars($compte["username"], ENT_QUOTES),
+                "password" => password_hash($compte["password"], PASSWORD_DEFAULT),
+                "api_key" => $this->guidv4()
+            ];
 
-        $query = $this->connection->prepare($sql);
-        $query->execute($params);
+            $query = $this->connection->prepare($sql);
+            $query->execute($params);
 
-        $idUsager = $this->connection->lastInsertId();
-        $resultat = $this->afficherUsagerById($idUsager);
+            $idUsager = $this->connection->lastInsertId();
+            $resultat = $this->afficherUsagerById($idUsager);
 
-        return $resultat ?? [];
+            return $resultat ?? [];
+        } catch (\Throwable $th) {
+            return [];
+        }
     }
 
 
@@ -140,20 +148,24 @@ class FakemonRepository
      */
     public function afficherUsagerById(int $id): array
     {
-        $sql = "SELECT * FROM usager WHERE id = :id ;";
+        try {
+            $sql = "SELECT * FROM usager WHERE id = :id ;";
 
-        $params = [
-            "id" => $id
-        ];
+            $params = [
+                "id" => $id
+            ];
 
-        $query = $this->connection->prepare($sql);
-        $query->execute($params);
+            $query = $this->connection->prepare($sql);
+            $query->execute($params);
 
-        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+            $result = $query->fetchAll(PDO::FETCH_ASSOC);
 
 
 
-        return $result[0] ?? [];
+            return $result[0] ?? [];
+        } catch (\Throwable $th) {
+            return [];
+        }
     }
 
 
@@ -165,18 +177,22 @@ class FakemonRepository
      */
     public function afficherFakemonById(int $id): array
     {
-        $sql = "SELECT * FROM creature WHERE id = :id ;";
+        try {
+            $sql = "SELECT * FROM creature WHERE id = :id ;";
 
-        $params = [
-            "id" => $id
-        ];
+            $params = [
+                "id" => $id
+            ];
 
-        $query = $this->connection->prepare($sql);
-        $query->execute($params);
+            $query = $this->connection->prepare($sql);
+            $query->execute($params);
 
-        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+            $result = $query->fetchAll(PDO::FETCH_ASSOC);
 
-        return $result[0] ?? [];
+            return $result[0] ?? [];
+        } catch (\Throwable $th) {
+            return [];
+        }
     }
 
     /**
@@ -188,39 +204,43 @@ class FakemonRepository
      */
     public function insertFakemon(array $fakemon, string $apiKey): array
     {
-        $idUsager = $this->chercherUsagerId($apiKey);
-        if (empty($idUsager)) {
-            $idUsager = [
-                "id" => 0
-            ];
-        }
+        try {
+            $idUsager = $this->chercherUsagerId($apiKey);
+            if (empty($idUsager)) {
+                $idUsager = [
+                    "id" => 0
+                ];
+            }
 
-        $sql = "INSERT INTO creature (nom,id_type1,id_type2,hp,atk,def,sp_atk,sp_def,speed,description,id_usager) 
+            $sql = "INSERT INTO creature (nom,id_type1,id_type2,hp,atk,def,sp_atk,sp_def,speed,description,id_usager) 
         VALUES (:nom,:id_type1,:id_type2,:hp,:atk,:def,:sp_atk,:sp_def,:speed,:description,:id_usager);";
 
-        $params = [
-            "nom" => htmlspecialchars($fakemon["nom"],ENT_QUOTES) ?? "",
-            "id_type1" => $fakemon["id_type1"] ?? 1,
-            "id_type2" => $fakemon["id_type2"] ?? 1,
-            "hp" => $fakemon["hp"] ?? 0,
-            "atk" => $fakemon["atk"] ?? 0,
-            "def" => $fakemon["def"] ?? 0,
-            "sp_atk" => $fakemon["sp_atk"] ?? 0,
-            "sp_def" => $fakemon["sp_def"] ?? 0,
-            "speed" => $fakemon["speed"] ?? 0,
-            "description" => htmlspecialchars($fakemon["description"],ENT_QUOTES) ?? "",
-            "id_usager" => $idUsager["id"]
-        ];
+            $params = [
+                "nom" => htmlspecialchars($fakemon["nom"], ENT_QUOTES) ?? "",
+                "id_type1" => $fakemon["id_type1"] ?? 1,
+                "id_type2" => $fakemon["id_type2"] ?? 1,
+                "hp" => $fakemon["hp"] ?? 0,
+                "atk" => $fakemon["atk"] ?? 0,
+                "def" => $fakemon["def"] ?? 0,
+                "sp_atk" => $fakemon["sp_atk"] ?? 0,
+                "sp_def" => $fakemon["sp_def"] ?? 0,
+                "speed" => $fakemon["speed"] ?? 0,
+                "description" => htmlspecialchars($fakemon["description"], ENT_QUOTES) ?? "",
+                "id_usager" => $idUsager["id"]
+            ];
 
-        $query = $this->connection->prepare($sql);
-        $query->execute($params);
+            $query = $this->connection->prepare($sql);
+            $query->execute($params);
 
-        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+            $result = $query->fetchAll(PDO::FETCH_ASSOC);
 
-        $idFakemon = $this->connection->lastInsertId();
-        $resultat = $this->afficherFakemonById($idFakemon);
+            $idFakemon = $this->connection->lastInsertId();
+            $resultat = $this->afficherFakemonById($idFakemon);
 
-        return $resultat ?? [];
+            return $resultat ?? [];
+        } catch (\Throwable $th) {
+            return [];
+        }
     }
 
     /**
@@ -247,7 +267,7 @@ class FakemonRepository
 
             return $result[0] ?? [];
         } catch (\Throwable $th) {
-            return []; 
+            return [];
         }
     }
 
@@ -258,41 +278,43 @@ class FakemonRepository
      * @param int l'id du fakemon
      * @return DataResponse
      */
-    public function deleteFakemon(int $id,int $idUsager): array
+    public function deleteFakemon(int $id, int $idUsager): array
     {
-        $test = $this->afficherFakemonById($id);
+        try {
+            $test = $this->afficherFakemonById($id);
 
-        if (empty($test)) {
-            $data = [
-                "erreur"=> "Id inexistant"
-            ];
-            $resultat = [
-                "data" => $data,
-                "status" => 404
-            ];
-            return $resultat ?? [];
-        } else {
-            if($test["id_usager"] === $idUsager){
-                $sql = "DELETE FROM creature WHERE id=:id ;";
-
-                $params = [
-                    "id" => $id
+            if (empty($test)) {
+                $data = [
+                    "erreur" => "Id inexistant"
                 ];
-
-                $query = $this->connection->prepare($sql);
-                $query->execute($params);
-
                 $resultat = [
-                    "data" => $test,
-                    "status" => 200
+                    "data" => $data,
+                    "status" => 404
                 ];
-
                 return $resultat ?? [];
-            } 
-            else {
-                return [];
+            } else {
+                if ($test["id_usager"] === $idUsager) {
+                    $sql = "DELETE FROM creature WHERE id=:id ;";
+
+                    $params = [
+                        "id" => $id
+                    ];
+
+                    $query = $this->connection->prepare($sql);
+                    $query->execute($params);
+
+                    $resultat = [
+                        "data" => $test,
+                        "status" => 200
+                    ];
+
+                    return $resultat ?? [];
+                } else {
+                    return [];
+                }
             }
-            
+        } catch (\Throwable $th) {
+            return [];
         }
     }
 
@@ -307,51 +329,52 @@ class FakemonRepository
      */
     public function updateFakemon(array $fakemon, int $idFakemon, string $apikey, int $idUsager): array
     {
+        try {
+            $test = $this->afficherFakemonById($idFakemon);
 
-        $test = $this->afficherFakemonById($idFakemon);
-
-        if (empty($test)) {
-            $resultat = $this->insertFakemon($fakemon, $apikey);
-            $resultat = [
-                "data" => $resultat,
-                "status" => 201
-            ];
-
-            return $resultat ?? [];
-        } else {
-            if ($test["id_usager"] == $idUsager) {
-                $sql = "UPDATE creature
-                SET nom=:nom,id_type1=:id_type1,id_type2=:id_type2,hp=:hp,atk=:atk,def=:def,sp_atk=:sp_atk,sp_def=:sp_def,speed=:speed,description=:description
-                WHERE id = :id";
-
-                $params = [
-                    "id" => $idFakemon,
-                    "nom" => htmlspecialchars($fakemon["nom"],ENT_QUOTES) ?? "",
-                    "id_type1" => $fakemon["id_type1"] ?? 1,
-                    "id_type2" => $fakemon["id_type2"] ?? 1,
-                    "hp" => $fakemon["hp"] ?? 0,
-                    "atk" => $fakemon["atk"] ?? 0,
-                    "def" => $fakemon["def"] ?? 0,
-                    "sp_atk" => $fakemon["sp_atk"] ?? 0,
-                    "sp_def" => $fakemon["sp_def"] ?? 0,
-                    "speed" => $fakemon["speed"] ?? 0,
-                    "description" => htmlspecialchars($fakemon["description"],ENT_QUOTES) ?? ""
-                ];
-
-                $query = $this->connection->prepare($sql);
-                $query->execute($params);
-
+            if (empty($test)) {
+                $resultat = $this->insertFakemon($fakemon, $apikey);
                 $resultat = [
-                    "data" => $this->afficherFakemonById($idFakemon),
-                    "status" => 200
+                    "data" => $resultat,
+                    "status" => 201
                 ];
 
                 return $resultat ?? [];
+            } else {
+                if ($test["id_usager"] == $idUsager) {
+                    $sql = "UPDATE creature
+                SET nom=:nom,id_type1=:id_type1,id_type2=:id_type2,hp=:hp,atk=:atk,def=:def,sp_atk=:sp_atk,sp_def=:sp_def,speed=:speed,description=:description
+                WHERE id = :id";
+
+                    $params = [
+                        "id" => $idFakemon,
+                        "nom" => htmlspecialchars($fakemon["nom"], ENT_QUOTES) ?? "",
+                        "id_type1" => $fakemon["id_type1"] ?? 1,
+                        "id_type2" => $fakemon["id_type2"] ?? 1,
+                        "hp" => $fakemon["hp"] ?? 0,
+                        "atk" => $fakemon["atk"] ?? 0,
+                        "def" => $fakemon["def"] ?? 0,
+                        "sp_atk" => $fakemon["sp_atk"] ?? 0,
+                        "sp_def" => $fakemon["sp_def"] ?? 0,
+                        "speed" => $fakemon["speed"] ?? 0,
+                        "description" => htmlspecialchars($fakemon["description"], ENT_QUOTES) ?? ""
+                    ];
+
+                    $query = $this->connection->prepare($sql);
+                    $query->execute($params);
+
+                    $resultat = [
+                        "data" => $this->afficherFakemonById($idFakemon),
+                        "status" => 200
+                    ];
+
+                    return $resultat ?? [];
+                } else {
+                    return [];
+                }
             }
-            else {
-                return [];
-            }
-            
+        } catch (\Throwable $th) {
+            return [];
         }
     }
 
@@ -362,18 +385,22 @@ class FakemonRepository
      */
     public function selectFakemon(string $idUsager): array
     {
-        $sql = "SELECT * FROM creature WHERE id_usager = :idUsager ;";
+        try {
+            $sql = "SELECT * FROM creature WHERE id_usager = :idUsager  ORDER BY nom;";
 
 
-        $query = $this->connection->prepare($sql);
-        $params = [
-            "idUsager" => $idUsager
-        ];
-        $query->execute($params);
+            $query = $this->connection->prepare($sql);
+            $params = [
+                "idUsager" => $idUsager
+            ];
+            $query->execute($params);
 
-        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+            $result = $query->fetchAll(PDO::FETCH_ASSOC);
 
-        return $result ?? [];
+            return $result ?? [];
+        } catch (\Throwable $th) {
+            return [];
+        }
     }
 
 
@@ -384,16 +411,20 @@ class FakemonRepository
      */
     public function selectType(): array
     {
-        $sql = "SELECT * FROM type ORDER BY nom ;";
+        try {
+            $sql = "SELECT * FROM type ORDER BY nom ;";
 
 
-        $query = $this->connection->prepare($sql);
-        $query->execute();
+            $query = $this->connection->prepare($sql);
+            $query->execute();
 
-        $result = $query->fetchAll(PDO::FETCH_ASSOC);
+            $result = $query->fetchAll(PDO::FETCH_ASSOC);
 
 
 
-        return $result ?? [];
+            return $result ?? [];
+        } catch (\Throwable $th) {
+            return [];
+        }
     }
 }

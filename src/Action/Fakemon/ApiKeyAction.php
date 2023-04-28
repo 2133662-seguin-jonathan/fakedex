@@ -19,11 +19,7 @@ final class ApiKeyAction
         ServerRequestInterface $request,
         ResponseInterface $response
     ): ResponseInterface {
-
-        $resultat = [
-            "erreur" => "Requête invalide"
-        ];
-        $status = 401;
+        $status = 403;
 
         $queryParams = $request->getQueryParams() ?? [];
         $nouvelle = $queryParams["nouvelle"] ?? 0;
@@ -44,13 +40,10 @@ final class ApiKeyAction
                 if ($resultat["api_key"] != "Compte invalide") {
                     $status = 200;
                 }
+                // Construit la réponse HTTP
+                $response->getBody()->write((string)json_encode($resultat));
             }
-        }
-
-
-
-        // Construit la réponse HTTP
-        $response->getBody()->write((string)json_encode($resultat));
+        }        
 
         return $response
             ->withHeader('Content-Type', 'application/json')

@@ -22,29 +22,21 @@ final class AjoutFakemonAction
 
         // Récupération des données du corps de la requête
         $data = (array)$request->getParsedBody();
-
-        $resultat = [
-            "erreur" => "Requête invalide"
-        ];
-        $status = 401;
+        $status = 403;
        
         $valeurAuth = $request->getHeaderLine("Authorization");
-        if (explode(" ", $valeurAuth)[0] == "apikey") {
-            $token = explode(" ", $valeurAuth)[1];
-            if (base64_encode(base64_decode($token, true)) === $token) {
-                $apikey = base64_decode($token);
+       
+        $apikey = explode(" ", $valeurAuth)[1];
 
-                $resultatTest = $this->ajoutFakemonView->ajoutFakemon($data,$apikey);
-                if (!empty($resultatTest)){
-                    $resultat = $resultatTest["data"];
-                    $status = 201;
-                }
-                
-            }
+        $resultatTest = $this->ajoutFakemonView->ajoutFakemon($data,$apikey);
+        if (!empty($resultatTest)){
+            $resultat = $resultatTest["data"];
+            $status = 201;
+            // Construit la réponse HTTP
+            $response->getBody()->write((string)json_encode($resultat));
         }
 
-        // Construit la réponse HTTP
-        $response->getBody()->write((string)json_encode($resultat));
+        
 
         return $response
             ->withHeader('Content-Type', 'application/json')

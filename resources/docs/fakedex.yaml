@@ -1,6 +1,6 @@
 openapi: 3.0.0
 info:
-  version: 1.9.5
+  version: 2.1.0
   title: Fakedex
   description: Le fakedex de fakemon créer pour un projet de rpg style pokemon et le cadre du projet finale en cours de Services Web au Cégep de Victoriaville.
   
@@ -64,6 +64,8 @@ paths:
                     type: string
                 example:
                   erreur: "Requête invalide"
+        '403': 
+            description: Lorsque la clé api n'est pas valide pour la requête ou que vous avez dépassé la limite de stockage d'une variable de la bd.
 
 
   /fakemon/{id}:
@@ -214,6 +216,8 @@ paths:
                       type: string
                   example:
                     erreur: "Requête invalide"
+          '403': 
+            description: Lorsque la clé api n'est pas valide pour la requête ou que vous avez dépassé la limite de stockage d'une variable de la bd.
       delete:
         tags: 
           - Fakemon
@@ -288,6 +292,8 @@ paths:
                       type: string
                   example:
                     erreur: "Id inexistant"
+          '403': 
+            description: Lorsque la clé api n'est pas valide pour la requête ou que vous avez dépassé la limite de stockage d'une variable de la bd.
 
   /fakemon:
     get:
@@ -365,6 +371,8 @@ paths:
                     type: string
                 example:
                   erreur: "Requête invalide"
+        '403': 
+            description: Lorsque la clé api n'est pas valide pour la requête ou que vous avez dépassé la limite de stockage d'une variable de la bd.
     post:
       tags: 
         - Fakemon
@@ -469,6 +477,8 @@ paths:
                     type: string
                 example:
                   erreur: "Requête invalide"
+        '403': 
+            description: Lorsque la clé api n'est pas valide pour la requête ou que vous avez dépassé la limite de stockage d'une variable de la bd.
                
   /type:
     get:
@@ -520,6 +530,8 @@ paths:
                       type: string
                   example:
                     erreur: "Requête invalide"
+        '403': 
+            description: Lorsque la clé api n'est pas valide pour la requête ou que vous avez dépassé la limite de stockage d'une variable de la bd.
    
 
 components:
@@ -527,10 +539,10 @@ components:
     ApiKeyAuth:        
       type: http
       scheme: bearer
-      description: "La clé api doit être encoder en base64('27189210-4736-498f-9c54-e15f6a1fdfd6') Exemple de valeur: apikey MjcxODkyMTAtNDczNi00OThmLTljNTQtZTE1ZjZhMWZkZmQ2"
+      description: "Exemple de valeur: apikey 27189210-4736-498f-9c54-e15f6a1fdfd6"
     AccountAuth:
       type: http
       scheme: bearer
-      description: "Les infos doivent être encoder en base64('username password') Exemple de valeur: account dXNlciAxMjM0"
+      description: "Les infos doivent être encoder en base64('username password') (maximum de caractères pour l'username est de 100) Exemple de valeur: account dXNlciAxMjM0"
 
       

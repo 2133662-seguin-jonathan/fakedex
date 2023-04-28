@@ -16,33 +16,23 @@ final class TypeAction
     }
 
     public function __invoke(
-        ServerRequestInterface $request, 
+        ServerRequestInterface $request,
         ResponseInterface $response
     ): ResponseInterface {
 
-        $resultat = [
-            "erreur" => "Requête invalide"
-        ];
-        $status = 401;
+        $status = 403;
 
         $valeurAuth = $request->getHeaderLine("Authorization");
-        if (explode(" ", $valeurAuth)[0] == "apikey") {
-            $token = explode(" ", $valeurAuth)[1];
-            if (base64_encode(base64_decode($token, true)) === $token) {
-                $apikey = base64_decode($token);
-                
-                $resultatTest = $this->typeView->listeType($apikey);
-                if (!empty($resultatTest)){
-                    $resultat = $resultatTest;
-                    $status = 200;
-                }
-            }
+
+        $apikey = explode(" ", $valeurAuth)[1];
+
+        $resultatTest = $this->typeView->listeType($apikey);
+        if (!empty($resultatTest)) {
+            $resultat = $resultatTest;
+            $status = 200;
+            // Construit la réponse HTTP
+            $response->getBody()->write((string)json_encode($resultat));
         }
-
-        
-
-        // Construit la réponse HTTP
-        $response->getBody()->write((string)json_encode($resultat));
 
         return $response
             ->withHeader('Content-Type', 'application/json')
