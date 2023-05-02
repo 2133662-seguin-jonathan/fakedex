@@ -29,7 +29,6 @@ final class UpdateFakemonAction
         $apikey = explode(" ", $valeurAuth)[1];
         // Récupération des parametres
         $fakemonId = $request->getAttribute('id');
-
         $resultatTest = $this->updateFakemonView->updateFakemon($data, $fakemonId, $apikey);
         if (!empty($resultatTest)) {
             $resultat = $resultatTest["data"];

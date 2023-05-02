@@ -33,7 +33,7 @@ return function (App $app) {
     $app->get('/type', \App\Action\Fakemon\TypeAction::class)->add(CleApiMiddleWare::class);
 
     // Donne l'api key selon l'usager
-    $app->get('/apikey', \App\Action\Fakemon\ApiKeyAction::class);
+    $app->get('/apikey', \App\Action\Fakemon\ApiKeyAction::class) ;
 
 };
 

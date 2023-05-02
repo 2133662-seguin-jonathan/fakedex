@@ -331,8 +331,9 @@ class FakemonRepository
     {
         try {
             $test = $this->afficherFakemonById($idFakemon);
-
+            
             if (empty($test)) {
+                
                 $resultat = $this->insertFakemon($fakemon, $apikey);
                 $resultat = [
                     "data" => $resultat,
@@ -342,10 +343,7 @@ class FakemonRepository
                 return $resultat ?? [];
             } else {
                 if ($test["id_usager"] == $idUsager) {
-                    $sql = "UPDATE creature
-                SET nom=:nom,id_type1=:id_type1,id_type2=:id_type2,hp=:hp,atk=:atk,def=:def,sp_atk=:sp_atk,sp_def=:sp_def,speed=:speed,description=:description
-                WHERE id = :id";
-
+                    $sql = "UPDATE creature SET nom= :nom ,id_type1= :id_type1 ,id_type2= :id_type2 ,hp= :hp ,atk= :atk ,def= :def ,sp_atk= :sp_atk ,sp_def= :sp_def ,speed= :speed ,description= :description WHERE id = :id ;";
                     $params = [
                         "id" => $idFakemon,
                         "nom" => htmlspecialchars($fakemon["nom"], ENT_QUOTES) ?? "",
@@ -359,7 +357,6 @@ class FakemonRepository
                         "speed" => $fakemon["speed"] ?? 0,
                         "description" => htmlspecialchars($fakemon["description"], ENT_QUOTES) ?? ""
                     ];
-
                     $query = $this->connection->prepare($sql);
                     $query->execute($params);
 
@@ -367,9 +364,10 @@ class FakemonRepository
                         "data" => $this->afficherFakemonById($idFakemon),
                         "status" => 200
                     ];
-
+                    
                     return $resultat ?? [];
                 } else {
+                    
                     return [];
                 }
             }
