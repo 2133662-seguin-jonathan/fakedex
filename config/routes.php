@@ -14,9 +14,6 @@ return function (App $app) {
     // Documentation de l'api
     $app->get('/docs', \App\Action\Docs\SwaggerUiAction::class);
 
-    // // Films
-    // $app->get('/film', \App\Action\Film\FilmViewAction::class);
-
     // Ajouter un fakemon.
     $app->post('/fakemon', \App\Action\Fakemon\AjoutFakemonAction::class)->add(CleApiMiddleWare::class);
 
