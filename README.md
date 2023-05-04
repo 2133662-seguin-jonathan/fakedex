@@ -6,7 +6,7 @@
 
 ## Docummentation:
 
-Elle se retourve dans le dossier ressources/docs/fakedex.yaml aussi non faite cet exemple d'adress url avec le domaine où l'api est hébergé: *https://www.domaine.example/**docs***.
+Elle se retourve dans le dossier ressources/docs/fakedex.yaml aussi non faite cet exemple d'adress url avec le domaine où l'api est hébergé: *https://www.domaine.example/docs*.
 
 ## Contexte de création:
 
